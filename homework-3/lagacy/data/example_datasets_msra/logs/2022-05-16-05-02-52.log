@@ -1,0 +1,40 @@
+2022-05-16 05:02:52
+++++++++++++++++++++++++++++++++++++++++CONFIGURATION SUMMARY++++++++++++++++++++++++++++++++++++++++
+ Status:
+     mode                 : train
+ ++++++++++++++++++++++++++++++++++++++++
+ Datasets:
+     datasets         fold: data/example_datasets_msra
+     train            file: train.txt
+     validation       file: dev.txt
+     vocab             dir: data/example_datasets_msra/vocabs
+     delimiter            : b
+     checkpoints       dir: checkpoints/datasets_bert-bilsm
+     log               dir: data/example_datasets_msra/logs
+ ++++++++++++++++++++++++++++++++++++++++
+Labeling Scheme:
+     label          scheme: BIO
+     label           level: 2
+     suffixes             : ['ORG', 'PERSON', 'LOC']
+     measuring     metrics: ['precision', 'recall', 'f1']
+ ++++++++++++++++++++++++++++++++++++++++
+Model Configuration:
+     embedding         dim: 768
+     max  sequence  length: 128
+     hidden            dim: 200
+     CUDA  VISIBLE  DEVICE: 0
+     seed                 : 42
+ ++++++++++++++++++++++++++++++++++++++++
+ Training Settings:
+     epoch                : 30
+     batch            size: 6
+     dropout              : 0.1
+     learning         rate: 2e-05
+     optimizer            : AdamW
+     checkpoint       name: model
+     max       checkpoints: 30
+     print       per_batch: 20
+     is     early     stop: False
+     patient              : 10
+++++++++++++++++++++++++++++++++++++++++CONFIGURATION SUMMARY END++++++++++++++++++++++++++++++++++++++++
+loading label vocab...
