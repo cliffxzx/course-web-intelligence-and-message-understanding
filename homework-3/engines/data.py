@@ -10,8 +10,7 @@ import numpy as np
 from engines.utils.io_functions import read_csv
 from tqdm import tqdm
 import tensorflow_hub as hub
-import bert
-from transformers import BertTokenizer
+from transformers import AutoTokenizer
 
 
 class BertDataManager:
@@ -50,11 +49,7 @@ class BertDataManager:
         hub_url = "https://tfhub.dev/tensorflow/bert_multi_cased_L-12_H-768_A-12/2"
         l_bert = hub.KerasLayer(hub_url, trainable=True)
 
-        vocab_file = l_bert.resolved_object.vocab_file.asset_path.numpy()
-        do_lower_case = l_bert.resolved_object.do_lower_case.numpy()
-        FullTokenizer = bert.bert_tokenization.FullTokenizer
-        # self.tokenizer = FullTokenizer(vocab_file, do_lower_case)
-        self.tokenizer = tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
+        self.tokenizer = AutoTokenizer.from_pretrained('bert-base-cased')
 
         self.max_token_number = len(self.tokenizer.vocab)
         self.max_label_number = len(self.label2id)

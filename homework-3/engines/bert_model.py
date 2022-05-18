@@ -9,23 +9,20 @@ import tensorflow as tf
 from tensorflow_addons.text.crf import crf_log_likelihood
 import tensorflow_hub as hub
 from tensorflow.keras.models import Model
-import bert
+from transformers import AutoTokenizer
 
 
 class BiLSTM_CRFModel(tf.keras.Model):
     def __init__(self, configs, vocab_size, num_classes, **kwargs):
         super().__init__(**kwargs)
         max_seq_length = configs.max_sequence_length
-        input_word_ids = tf.keras.layers.Input(shape=(max_seq_length,), dtype=tf.int32,
-                                               name="input_word_ids")
-        input_mask = tf.keras.layers.Input(shape=(max_seq_length,), dtype=tf.int32,
-                                           name="input_mask")
-        segment_ids = tf.keras.layers.Input(shape=(max_seq_length,), dtype=tf.int32,
-                                            name="segment_ids")
+        input_word_ids = tf.keras.layers.Input(shape=(max_seq_length,), dtype=tf.int32, name="input_word_ids")
+        input_mask = tf.keras.layers.Input(shape=(max_seq_length,), dtype=tf.int32, name="input_mask")
+        segment_ids = tf.keras.layers.Input(shape=(max_seq_length,), dtype=tf.int32, name="segment_ids")
 
-        # hub_url = "https://tfhub.dev/jeongukjae/xlm_roberta_multi_cased_L-24_H-1024_A-16/1"
+        hub_url = "https://tfhub.dev/jeongukjae/xlm_roberta_multi_cased_L-24_H-1024_A-16/1"
         # hub_url = "https://tfhub.dev/tensorflow/bert_zh_L-12_H-768_A-12/2"
-        hub_url = "https://tfhub.dev/tensorflow/bert_multi_cased_L-12_H-768_A-12/2"
+        # hub_url = "https://tfhub.dev/tensorflow/bert_multi_cased_L-12_H-768_A-12/2"
 
         self.l_bert = hub.KerasLayer(hub_url, trainable=True)
         pooled_output, sequence_output = self.l_bert([input_word_ids, input_mask, segment_ids])
@@ -39,11 +36,7 @@ class BiLSTM_CRFModel(tf.keras.Model):
         self.bilstm = tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(self.hidden_dim, return_sequences=True))
         self.dense = tf.keras.layers.Dense(num_classes)
         self.transition_params = tf.Variable(tf.random.uniform(shape=(num_classes, num_classes)))
-
-        vocab_file = self.l_bert.resolved_object.vocab_file.asset_path.numpy()
-        do_lower_case = self.l_bert.resolved_object.do_lower_case.numpy()
-        FullTokenizer = bert.bert_tokenization.FullTokenizer
-        self.tokenizer = FullTokenizer(vocab_file, do_lower_case)
+        self.tokenizer = AutoTokenizer.from_pretrained('bert-base-cased')
 
     @tf.function
     def call(self, X_batch, attention_mask_batch, segment_batch, inputs_length, targets, training=None):

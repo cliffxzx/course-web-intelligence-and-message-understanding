@@ -10,6 +10,7 @@
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/homework-3",
       "justMyCode": true
     },
     {
@@ -17,10 +18,7 @@
       "type": "python",
       "request": "launch",
       "module": "scrapy",
-      "args": [
-        "runspider",
-        "${file}"
-      ],
+      "args": ["runspider", "${file}"],
       "console": "integratedTerminal"
     }
   ]
